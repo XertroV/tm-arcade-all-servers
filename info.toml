@@ -1,0 +1,9 @@
+[meta]
+name     = "Arcade Unlimiter"
+author   = "XertroV"
+category = "Settings"
+version  = "0.1.0"
+siteid   = 354
+
+[script]
+#__DEFINES__
