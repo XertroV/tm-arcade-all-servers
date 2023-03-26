@@ -1,65 +1,26 @@
+LoadAllClubRoomsHook@ hook = LoadAllClubRoomsHook();
+
 void Main() {
-    await({
-        startnew(GetStatusFromOpenplanet),
-        startnew(WaitForMenu)
-    });
-    yield();
-    if (g_isEnabled)
-        PatchMenuCode();
+    MLHook::RegisterMLHook(hook, hook.type, true);
 }
 
-// this will be set to true in GetStatusFromOpenplanet
-bool g_isEnabled = false;
+void OnDestroyed() {Unload();}
+void OnDisabled() {Unload();}
+void Unload() {
+    MLHook::UnregisterMLHooksAndRemoveInjectedML();
+}
 
-void GetStatusFromOpenplanet() {
-    auto req = Net::HttpGet("https://openplanet.dev/plugin/arcadeunlimiter/config/status");
-    while (!req.Finished()) yield();
-    if (req.ResponseCode() != 200) {
-        warn('getting plugin enabled status: code: ' + req.ResponseCode() + '; error: ' + req.Error() + '; body: ' + req.String());
-        RetryGetStatus(1000);
+class LoadAllClubRoomsHook : MLHook::HookMLEventsByType {
+    LoadAllClubRoomsHook() {
+        super("TMNext_ClubStore_Action_LoadAllClubRoomsPage");
     }
-    try {
-        auto j = Json::Parse(req.String());
-        g_isEnabled = bool(j['enabled']);
-        trace('set enabled to: ' + tostring(g_isEnabled));
-    } catch {
-        warn("exception: " + getExceptionInfo());
-        RetryGetStatus(1000);
-    }
-}
 
-uint retries = 0;
-
-void RetryGetStatus(uint delay) {
-    trace('retying GetStatusFromOpenplanet in ' + delay + ' ms');
-    sleep(delay);
-    retries++;
-    if (retries > 5) {
-        warn('not retying anymore, too many failures.');
-        return;
-    }
-    trace('retrying...');
-    GetStatusFromOpenplanet();
-}
-
-void WaitForMenu() {
-    auto app = cast<CGameManiaPlanet>(GetApp());
-    while (app.MenuManager is null) yield();
-    while (app.MenuManager.MenuCustom_CurrentManiaApp is null) yield();
-    // the bg page is index 12 ish
-    while (app.MenuManager.MenuCustom_CurrentManiaApp.UILayers.Length < 30) yield();
-}
-
-void PatchMenuCode() {
-    auto mm = cast<CTrackMania>(GetApp()).MenuManager;
-    auto maniaApp = mm.MenuCustom_CurrentManiaApp;
-    for (uint i = 0; i < maniaApp.UILayers.Length; i++) {
-        auto layer = maniaApp.UILayers[i];
-        if (!layer.ManialinkPageUtf8.SubStr(0, 200).Contains('<manialink name="Page_Arcade" '))
-            continue;
-        string newML = layer.ManialinkPageUtf8
-            .Replace('	DisplaySearch(ScrollView, "", False, False, True);', '	DisplaySearch(ScrollView, "_", False, False, True);');
-        layer.ManialinkPage = newML;
-        break;
+    void OnEvent(MLHook::PendingEvent@ event) override {
+        if (event.data.Length != 3) {
+            warn("got bad length for load all club rooms page event: " + event.data.Length);
+        } else if (event.data[0] == "") {
+            // event.data: {query, offset, length} -- all strings
+            MLHook::Queue_Menu_SendCustomEvent("TMNext_ClubStore_Action_LoadAllClubRoomsPage", {"_", event.data[1], event.data[2]});
+        }
     }
 }

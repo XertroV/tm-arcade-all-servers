@@ -7,3 +7,4 @@ siteid   = 354
 
 [script]
 #__DEFINES__
+dependencies = ["MLHook"]
