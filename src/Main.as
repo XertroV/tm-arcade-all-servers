@@ -1,14 +1,11 @@
 LoadAllClubRoomsHook@ hook = LoadAllClubRoomsHook();
 
-void Main() {
-    MLHook::RegisterMLHook(hook, hook.type, true);
-}
-
+void Main() {Load();}
+void OnEnabled() {Load();}
 void OnDestroyed() {Unload();}
 void OnDisabled() {Unload();}
-void Unload() {
-    MLHook::UnregisterMLHooksAndRemoveInjectedML();
-}
+void Unload() {MLHook::UnregisterMLHooksAndRemoveInjectedML();}
+void Load() {MLHook::RegisterMLHook(hook, hook.type, true);}
 
 class LoadAllClubRoomsHook : MLHook::HookMLEventsByType {
     LoadAllClubRoomsHook() {

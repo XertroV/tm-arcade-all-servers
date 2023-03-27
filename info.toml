@@ -1,8 +1,8 @@
 [meta]
-name     = "Arcade Unlimiter"
+name     = "Arcade All Servers"
 author   = "XertroV"
 category = "Settings"
-version  = "0.1.0"
+version  = "0.1.-1"
 siteid   = 354
 
 [script]

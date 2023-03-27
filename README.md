@@ -10,6 +10,6 @@ Authors: XertroV
 
 Suggestions/feedback: @XertroV on Openplanet discord
 
-Code/issues: [https://github.com/XertroV/tm-arcade-unlimiter](https://github.com/XertroV/tm-arcade-unlimiter)
+Code/issues: [https://github.com/XertroV/tm-arcade-all-servers](https://github.com/XertroV/tm-arcade-all-servers)
 
 GL HF
