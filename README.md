@@ -1,8 +1,8 @@
-# Arcade Unlimiter
+# Arcade All Servers
 
-This plugin patches the menu arcade code so that all club rooms show up in the list by default (not just whitelisted ones).
+**Requires MLHook**
 
-This plugin can be disabled remotely in the case that a game update breaks it.
+This plugin overrides the default arcade search to display all club rooms / servers by default (not just whitelisted ones).
 
 License: Public Domain
 
